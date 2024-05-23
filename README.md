@@ -1,0 +1,1 @@
+Repository for the game jam [JameGam](https://itch.io/jam/jame-gam-40)
