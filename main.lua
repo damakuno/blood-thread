@@ -14,6 +14,8 @@ panel_index = 1
 function love.load()
     love.window.setTitle("Blood Sewn")
     love.window.setMode(1920, 1080)
+    
+    love.mouse.setCursor(love.mouse.newCursor("res/needlecursor.png", 0, 0))
     -- settings = LIP.load("config/Settings.ini")
     -- debug_text = file.readall('config/test.json')
     settings = json.decode(file.readall('config/settings.json'))
@@ -43,7 +45,7 @@ end
 function love.draw()
     for key, value in ipairs(panels) do
         panels[key]:draw()
-    end    
+    end
     -- love.graphics.setColor(135 / 255, 76 / 255, 71 / 255, 1)
     -- panel1:draw()
     -- love.graphics.setColor(255 / 255, 255 / 255, 255 / 255, 1)    
@@ -71,7 +73,7 @@ function love.mousemoved(x, y, dx, dy, istouch)
     mouse.y = y
     mouse.dx = dx
     mouse.dy = dy
-	rope1:moveFirstPoint(mouse.x + 20, mouse.y - 20)
+	rope1:moveFirstPoint(mouse.x + 30, mouse.y + 30)
 end
 
 function love.keypressed(key, u)
