@@ -22,14 +22,9 @@ function love.load()
     debug_text = settings.Misc.debug
 
     panel_config = json.decode(file.readall('intro.json'))
-    for key, value in ipairs(panel_config) do
-        print(key.." "..value.image)
+    for key, value in ipairs(panel_config) do        
         debug_text = value.image
         panels[key] = ComicPanel:new(love.graphics.newImage(value.image), value.x, value.y, value.duration, value.transition)
-    end
-
-    for key, value in ipairs(panels) do
-        print(value.x..value.y)
     end
     -- panel1 = ComicPanel:new(love.graphics.newImage("res/test/panel1.png"), nil,nil, 1, "from_bottom")
     -- panel1.x = 50
@@ -84,5 +79,10 @@ function love.keypressed(key, u)
 end
 
 function love.mousepressed(x, y, button)
-
+    if button == 1 then
+        panel_index = panel_index + 1
+        if panels[panel_index] ~= nil then
+            panels[panel_index]:start()
+        end
+    end
 end
