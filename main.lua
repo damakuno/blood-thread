@@ -16,8 +16,6 @@ function love.load()
     love.window.setMode(1920, 1080)
     
     love.mouse.setCursor(love.mouse.newCursor("res/needlecursor.png", 0, 0))
-    -- settings = LIP.load("config/Settings.ini")
-    -- debug_text = file.readall('config/test.json')
     settings = json.decode(file.readall('config/settings.json'))
     debug_text = settings.Misc.debug
 
@@ -26,9 +24,6 @@ function love.load()
         debug_text = value.image
         panels[key] = ComicPanel:new(love.graphics.newImage(value.image), value.x, value.y, value.duration, value.transition)
     end
-    -- panel1 = ComicPanel:new(love.graphics.newImage("res/test/panel1.png"), nil,nil, 1, "from_bottom")
-    -- panel1.x = 50
-    -- panel1.y = 50
     panels[panel_index]:start()
 
     rope1 = Rope(love.graphics.getWidth()*.25, 100, 300, 25, 10)
@@ -41,9 +36,6 @@ function love.draw()
     for key, value in ipairs(panels) do
         panels[key]:draw()
     end
-    -- love.graphics.setColor(135 / 255, 76 / 255, 71 / 255, 1)
-    -- panel1:draw()
-    -- love.graphics.setColor(255 / 255, 255 / 255, 255 / 255, 1)    
     rope1:draw()
 
     if settings.Misc.debug == 1 then
@@ -60,7 +52,6 @@ function love.update(dt)
     for key, value in ipairs(panels) do
         value:update(dt)
     end
-    -- panel1:update(dt)
 end
 
 function love.mousemoved(x, y, dx, dy, istouch)
