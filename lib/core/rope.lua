@@ -12,7 +12,7 @@ local NUM_ITERATIONS = 20
 function Rope.new(x, y, length, angle, angleVariation)
    local self = setmetatable({}, Rope)
    
-   self.NUM_POINTS = 200;
+   self.NUM_POINTS = 100;
    self.DRAG_FACTOR = 0.5
    self.GRAVITY_X = 0
    self.GRAVITY_Y = 1200
@@ -99,8 +99,7 @@ function Rope:draw()
 	love.graphics.setColor(194, 0, 0)
 	for i = 2, self.NUM_POINTS do
 		love.graphics.line(self.pos_x[i-1], self.pos_y[i-1], self.pos_x[i], self.pos_y[i])
-	end
-	love.graphics.setColor(255, 255, 255)
+	end	
 	--for i = 1, self.NUM_POINTS do
 	--	love.graphics.circle("line", self.pos_x[i], self.pos_y[i], 5)
 	--end

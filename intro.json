@@ -1,0 +1,23 @@
+[
+    {
+        "x": 50,
+        "y": 50,
+        "duration": 1,
+        "transition": "from_top",
+        "image": "res/test/panel1.png"
+    },    
+    {
+        "x": 150,
+        "y": 150,
+        "duration": 1,
+        "transition": "from_bottom",
+        "image": "res/test/panel2.png"
+    },    
+    {
+        "x": 250,
+        "y": 250,
+        "duration": 1,
+        "transition": "from_bottom",
+        "image": "res/test/panel3.png"
+    }
+]
