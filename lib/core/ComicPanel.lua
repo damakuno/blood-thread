@@ -15,12 +15,14 @@ function ComicPanel:new(image, x, y, duration, transition, width, height, object
         duration = duration or 1,
         enabled = false,
         visible = true,
+        fadeout = false,
         alpha = 0,
         x = x or 0,
         y = x or 0,
         offsetX = 0,
         offsetY = 0,
-        fadeInTween = nil
+        fadeInTween = nil,
+        fadeOutTween = nil
     }
     
     if transition == "from_top" then
@@ -34,6 +36,7 @@ function ComicPanel:new(image, x, y, duration, transition, width, height, object
     end
 
     object.fadeInTween = tween.new(object.duration, object, {alpha=1, offsetX = 0, offsetY = 0}, 'linear')
+    object.fadeOutTween = tween.new(0.5, object, {alpha=0}, 'linear')
 
     setmetatable(object, self)
     self.__index = self
@@ -47,6 +50,9 @@ function ComicPanel:update(dt)
         if self.currentTime >= self.duration then
             self.currentTime = self.currentTime - self.duration
         end
+    end
+    if self.fadeout == true then
+        self.fadeOutTween:update(dt)
     end
 end
 
@@ -62,6 +68,10 @@ end
 
 function ComicPanel:start()
     self.enabled = true
+end    
+
+function ComicPanel:stop()
+    self.fadeout = true
 end    
 
 function ComicPanel:show()

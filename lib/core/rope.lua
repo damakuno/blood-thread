@@ -96,7 +96,7 @@ function Rope:moveLastPoint(new_x, new_y)
 end
 
 function Rope:draw()
-	love.graphics.setColor(194, 0, 0)
+	love.graphics.setColor(220/255, 0, 0)
 	for i = 2, self.NUM_POINTS do
 		love.graphics.line(self.pos_x[i-1], self.pos_y[i-1], self.pos_x[i], self.pos_y[i])
 	end	
