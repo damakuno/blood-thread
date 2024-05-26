@@ -215,7 +215,7 @@ function love.mousepressed(x, y, button)
     if button == 1 then
         mouse.pressed = true
         -- handle chapters here    
-        if game_end then chapter_length = 13 else chapter_length = 9 end
+        if game_end then chapter_length = 13 else chapter_length = 10 end
         
         if chapter_index < (chapter_length + 1) then
             if panels[panel_index] ~= nil then

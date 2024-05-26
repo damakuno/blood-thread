@@ -2,8 +2,22 @@
     {
         "x": 0,
         "y": 0,
-        "duration": 1,
+        "duration": 2,
         "transition": "from_top",
-        "image": "res/Opening Cutscene/4.png"
+        "image": "res/Opening Cutscene/3-1.png"
+    },    
+    {
+        "x": 0,
+        "y": 0,
+        "duration": 2,
+        "transition": "from_right",
+        "image": "res/Opening Cutscene/3-2.png"
+    },
+    {
+        "x": 0,
+        "y": 0,
+        "duration": 2,
+        "transition": "from_bottom",
+        "image": "res/Opening Cutscene/3-3.png"
     }
 ]
