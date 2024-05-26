@@ -1,6 +1,6 @@
 {
     "Misc": {
-        "debug": 1
+        "debug": 0
     },
     "Sound": {
         "masterVolume": "0.8",

@@ -43,6 +43,8 @@ woundFadeOutTween = tween.new(1, wound_images_config, {alpha=0}, 'linear')
 
 hp = 100
 
+game_over = false
+
 function cursorInCircle(x, y, center_x, center_y, radius)
     return ((x-center_x)^2 + (y - center_y)^2) < radius^2
 end
@@ -88,6 +90,8 @@ function love.load()
     img_leg_wound = love.graphics.newImage("res/levels/Leg_Wound.png")
     img_torso = love.graphics.newImage("res/levels/Torso.png")
     img_torso_wound = love.graphics.newImage("res/levels/Torso_Wound.png")
+    
+    img_game_over = love.graphics.newImage("res/Game Over.png")
 
     btn_next = Button:new("btn_next", 
         1500, 900, nil, nil, love.graphics.newImage("res/ui/Next Button.png"),
@@ -120,7 +124,7 @@ function love.draw()
         love.graphics.draw(img_mortician, 50,800)
         love.graphics.draw(img_vignette, 0,0)
         rope1:draw()
-    end
+    end    
 
     if settings.Misc.debug == 1 then
         love.graphics.setColor(255,255,255)
@@ -146,6 +150,11 @@ function love.draw()
     for key, value in ipairs(stitch_regions) do
         love.graphics.setColor(120/255,120/255,120/255, 1)
         love.graphics.circle('fill', value.x, value.y, 7 )        
+    end
+    
+    if game_over then
+        love.graphics.setColor(255,255,255)
+        love.graphics.draw(img_game_over, 0, 0)
     end
 end
 
@@ -183,6 +192,8 @@ function love.mousemoved(x, y, dx, dy, istouch)
         hp = hp - 0.1
         blood_quad = love.graphics.newQuad(0,0, blood_width,blood_height * (hp / 100), blood_width,blood_height)
         if hp <= 0 then
+            current_level = 0
+            game_over = true
             -- game over state
         end
     end
@@ -243,13 +254,15 @@ function love.mousereleased( x, y, button, istouch, presses )
     if stitch_region_group[active_stitch_index] ~= nil then
         if checkAllClear(stitch_region_group[active_stitch_index]) == false then
             resetRegions(stitch_region_group[active_stitch_index])
+        else
+            audio:playStitched()
         end    
         all_clear = true
         for key, stitch_region in ipairs(stitch_region_group) do
             if checkAllClear(stitch_region) == false then all_clear = false end
         end
         if all_clear then 
-            level_cleared = true
+            level_cleared = true            
             print("All regions cleared!")
             btn_next.visible = true
         end

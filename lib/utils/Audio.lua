@@ -12,7 +12,7 @@ function Audio:new(object)
         }
 
     -- sfx
-    -- object.srcStitched = love.audio.newSource("res/audio/stitched.mp3", "static")
+    object.srcStitched = love.audio.newSource("res/audio/stitch.mp3", "static")
     object.audioFadeIn = tween.new(1, object, {bgmVolume = 0.35}, 'linear')
     object.audioFadeOut = tween.new(1, object, {bgmVolume = 0}, 'linear')
     --bgm
@@ -52,8 +52,8 @@ function Audio:playEndBGM()
     self.srcEndBGM:play()
 end
 
-function Audio:playSFX()
-    self.srcStitched:setVolume(0.2 * settings.Sound.masterVolume * settings.Sound.sfxVolume)
+function Audio:playStitched()
+    self.srcStitched:setVolume(0.7 * settings.Sound.masterVolume * settings.Sound.sfxVolume)
     self.srcStitched:setLooping(false)
     self.srcStitched:play()
 end
