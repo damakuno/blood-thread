@@ -1,8 +1,8 @@
 local Button = {}
 
 function Button:new(name, x, y, width, height, image, hoverImage, text, font, object)
-    if width == nil then width = image.width end
-    if height == nil then height = image.height end
+    if width == nil then width = image:getWidth() end
+    if height == nil then height = image:getHeight() end
     object = object or {
         name = name,
         x = x,
@@ -18,7 +18,7 @@ function Button:new(name, x, y, width, height, image, hoverImage, text, font, ob
         onhover = function(x, y, dx, dy, istouch) end,        
         isHover = false,
         visible = true
-    }        
+    }
 
     setmetatable(object, self)
     self.__index = self
@@ -28,8 +28,8 @@ end
 
 function Button:isWithin(mx, my)
     x1 = self.x
-    y1 = self.y
-    x2 = self.x + self.width
+    y1 = self.y     
+    x2 = self.x + self.width    
     y2 = self.y + self.height
 
     if (mx > x1 and mx < x2 and my > y1 and my < y2) then return true end
@@ -65,7 +65,7 @@ function Button:draw(x, y, r, sx, sy, ox, oy, kx, ky)
     if self.visible ~= true then return end
     love.graphics.setColor(255, 255, 255)
     if self.isHover == true then
-        -- self.hoverImage:draw(self.x, self.y)
+        -- self.hoverImage:draw(self.x, self.y)        
         love.graphics.draw(self.hoverImage, self.x or x, self.y or y, r or 0, sx or 1, sy or 1, ox, oy, kx, ky)
     else
         -- self.image:draw(self.x, self.y)
