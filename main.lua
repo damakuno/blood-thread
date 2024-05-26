@@ -228,10 +228,13 @@ function love.mousepressed(x, y, button)
                 end
                 chapter_index = chapter_index + 1
                 if chapter_index == (chapter_length + 1) then
-                -- transition to gameplay here                
-                    audio:playDefaultBGM()                
-                    panels = {}
-                    loadNextLevel()
+                -- transition to gameplay here
+                    if game_end then
+                    else
+                        audio:playDefaultBGM()                
+                        panels = {}
+                        loadNextLevel()
+                    end
                 else
                     if game_end then
                         load_panels("ending"..chapter_index..".json")
