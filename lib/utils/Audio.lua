@@ -18,6 +18,7 @@ function Audio:new(object)
     --bgm
     object.srcIntroBGM = love.audio.newSource("res/audio/moonlight-sonata.mp3", "stream")
     object.srcDefaultBGM = love.audio.newSource("res/audio/gnossienne.mp3", "stream")
+    object.srcEndBGM = love.audio.newSource("res/audio/sad-moment-piano.mp3", "stream")    
 
     setmetatable(object, self)
     self.__index = self
@@ -27,6 +28,7 @@ end
 function Audio:stopAllBGM()
     self.srcDefaultBGM:stop()
     self.srcIntroBGM:stop()
+    self.srcEndBGM:stop()
 end
 
 function Audio:playDefaultBGM()
@@ -41,6 +43,13 @@ function Audio:playIntroBGM()
     self.srcIntroBGM:setVolume(0.5 * settings.Sound.masterVolume * settings.Sound.musicVolume)
     self.srcIntroBGM:setLooping(true)
     self.srcIntroBGM:play()
+end
+
+function Audio:playEndBGM()
+    self:stopAllBGM()
+    self.srcEndBGM:setVolume(0.5 * settings.Sound.masterVolume * settings.Sound.musicVolume)
+    self.srcEndBGM:setLooping(true)
+    self.srcEndBGM:play()
 end
 
 function Audio:playSFX()

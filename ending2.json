@@ -1,0 +1,16 @@
+[
+    {
+        "x": 0,
+        "y": 0,
+        "duration": 1.5,
+        "transition": "from_left",
+        "image": "res/Ending Cutscene/2-1.png"
+    },
+    {
+        "x": 0,
+        "y": 0,
+        "duration": 1.5,
+        "transition": "from_right",
+        "image": "res/Ending Cutscene/2-2.png"
+    }
+]

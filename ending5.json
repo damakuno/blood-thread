@@ -1,0 +1,23 @@
+[
+    {
+        "x": 0,
+        "y": 0,
+        "duration": 1.5,
+        "transition": "from_top",
+        "image": "res/Ending Cutscene/5-1.png"
+    },
+    {
+        "x": 0,
+        "y": 0,
+        "duration": 1.5,
+        "transition": "from_bottom",
+        "image": "res/Ending Cutscene/5-2.png"
+    },    
+    {
+        "x": 0,
+        "y": 0,
+        "duration": 1.5,
+        "transition": "from_top",
+        "image": "res/Ending Cutscene/5-3.png"
+    }
+]

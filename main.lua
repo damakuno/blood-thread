@@ -11,6 +11,7 @@ Rope = require "lib.core.rope"
 
 mouse = { x = 0, y = 0, dx = 0, dy = 0, pressed = false }
 
+game_end = false
 panels = {}
 panel_index = 1
 chapter_index = 1
@@ -203,7 +204,9 @@ function love.mousepressed(x, y, button)
     if button == 1 then
         mouse.pressed = true
         -- handle chapters here    
-        if chapter_index < 10 then
+        if game_end then chapter_length = 13 else chapter_length = 9 end
+        
+        if chapter_index < (chapter_length + 1) then
             if panels[panel_index] ~= nil then
                 panels[panel_index]:start()
             end            
@@ -213,13 +216,17 @@ function love.mousepressed(x, y, button)
                     panels[key]:stop()
                 end
                 chapter_index = chapter_index + 1
-                if chapter_index == 10 then
+                if chapter_index == (chapter_length + 1) then
                 -- transition to gameplay here                
                     audio:playDefaultBGM()                
                     panels = {}
                     loadNextLevel()
                 else
-                    load_panels("intro"..chapter_index..".json")
+                    if game_end then
+                        load_panels("ending"..chapter_index..".json")
+                    else
+                        load_panels("intro"..chapter_index..".json")
+                    end                    
                 end
             end
         end
@@ -309,6 +316,13 @@ function loadNextLevel()
     end
     if current_level == 5 then
         -- transition to ending
+        current_body.body_image = nil
+        current_body.wound_image = nil
+        game_end = true
+        current_level = 0
+        chapter_index = 0
+        panel_index = 1        
+        audio:playEndBGM()
     end
 end
 
@@ -316,7 +330,7 @@ function load_panels(filename)
     panel_index = 1
     panel_config = json.decode(file.readall(filename))
     panels = {}
-    for key, value in ipairs(panel_config) do        
+    for key, value in ipairs(panel_config) do
         debug_text = value.image
         panels[key] = ComicPanel:new(love.graphics.newImage(value.image), value.x, value.y, value.duration, value.transition)
     end

@@ -1,0 +1,9 @@
+[
+    {
+        "x": 0,
+        "y": 0,
+        "duration": 2,
+        "transition": "from_top",
+        "image": "res/Ending Cutscene/7.png"
+    }
+]
