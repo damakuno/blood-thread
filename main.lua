@@ -41,7 +41,7 @@ wound_images_config = {
 }
 woundFadeOutTween = tween.new(1, wound_images_config, {alpha=0}, 'linear')
 
-hp = 100
+hp = 0
 
 game_over = false
 
@@ -51,12 +51,14 @@ end
 
 function love.load()
     love.window.setTitle("Blood Sewn")
-    love.window.setMode(1920, 1080)    
+    love.window.setMode(1920, 1080)
     love.mouse.setCursor(love.mouse.newCursor("res/needlecursor.png", 0, 0))
     settings = json.decode(file.readall('config/settings.json'))
     debug_text = settings.Misc.debug
     audio = Audio:new()
     audio:playIntroBGM()
+
+    hp = settings.Game.hp
 
     --loading comic panels
     panel_config = json.decode(file.readall('intro1.json'))
@@ -107,6 +109,40 @@ end
 
 
 function love.draw()
+    -- Store desktop resolution
+	local width, height = love.window.getDesktopDimensions()	
+	-- Resolution to be upscaled
+	local xscale = 480
+	local yscale = 270
+	local scale = math.min(xscale, yscale)
+	
+	-- 2x windowed mode if below 720p
+	if height < 720 then
+		love.graphics.scale(1, 1) -- Integer scaling
+
+	-- Otherwise go fullscreen and output the largest 1:1 image possible; x/yscale, width/height and scaling multipliers need to be manually adjusted
+	elseif width == 1280 and height == 720 then
+		love.window.setFullscreen(true)
+		local xoffset = (width-xscale*2)/2 -- 960x540 in 1280x720 will produce black borders
+		local yoffset = (height-yscale*2)/2 -- so image needs to be centered
+		love.graphics.translate(xoffset, yoffset) -- needed when centering so coordinates remain consistent
+		love.graphics.setScissor(xoffset, yoffset, width*2/2, height*2/2) -- keeps out-of-bound objects hidden, needs testing
+		love.graphics.scale(1, 1)
+	elseif width == 1600 and height == 900 then
+		love.window.setFullscreen(true)
+		local xoffset = (width-xscale*3)/2
+		local yoffset = (height-yscale*3)/2
+		love.graphics.setScissor(xoffset, yoffset, width*3/2, height*3/2)
+		love.graphics.translate(xoffset, yoffset)
+		love.graphics.scale(1, 1)
+	-- and so on
+		
+	-- Perfect fullsize image, no centering needed
+	elseif width == 1920 and height == 1080 then
+		love.window.setFullscreen(true)
+		love.graphics.scale(1, 1)
+	end
+	
     love.graphics.setColor(255,255,255)
     for key, value in ipairs(panels) do
         panels[key]:draw()
@@ -189,8 +225,8 @@ function love.mousemoved(x, y, dx, dy, istouch)
     end
 
     if mouse.pressed then
-        hp = hp - 0.1
-        blood_quad = love.graphics.newQuad(0,0, blood_width,blood_height * (hp / 100), blood_width,blood_height)
+        hp = hp - 0.05
+        blood_quad = love.graphics.newQuad(0,0, blood_width,blood_height * (hp / settings.Game.hp), blood_width,blood_height)
         if hp <= 0 then
             current_level = 0
             game_over = true
@@ -289,12 +325,12 @@ function resetRegions(stitch_region)
 end
 
 function resetLevel()
-    hp = 100
+    hp = settings.Game.hp
     wound_images_config = {alpha = 1}
     woundFadeOutTween = tween.new(1, wound_images_config, {alpha=0}, 'linear')
     level_cleared = false
     stitch_region_group = {}
-    blood_quad = love.graphics.newQuad(0,0, blood_width,blood_height * (hp / 100), blood_width,blood_height)
+    blood_quad = love.graphics.newQuad(0,0, blood_width,blood_height * (hp / settings.Game.hp), blood_width,blood_height)
     btn_next.visible = false
 end
 
