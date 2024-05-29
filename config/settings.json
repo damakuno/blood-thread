@@ -9,8 +9,8 @@
     },
     "Preferences": {
         "fullscreen": false,
-        "resolution_width": 1366,
-        "resolution_height": 800
+        "resolution_width": 1920,
+        "resolution_height": 1080
     },  
     "Game": {
         "hp": 100,

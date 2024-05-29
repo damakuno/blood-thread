@@ -61,7 +61,23 @@ function love.load()
     audio = Audio:new()
 
     local gameWidth, gameHeight = 1920, 1080 --fixed game resolution
-    local windowWidth, windowHeight = settings.Preferences.resolution_width, settings.Preferences.resolution_height --love.window.getDesktopDimensions()
+    --settings.Preferences.resolution_width, settings.Preferences.resolution_height --
+    local desktopWidth, desktopHeight = love.window.getDesktopDimensions()
+    adjustedWidth, adjustedHeight = desktopWidth, desktopHeight
+    if settings.Preferences.resolution_width > desktopWidth then
+        adjustedWidth = desktopWidth
+    else
+        adjustedWidth = settings.Preferences.resolution_width
+    end
+    if settings.Preferences.resolution_height > desktopHeight then
+        adjustedHeight = desktopHeight
+    else
+        adjustedHeight = settings.Preferences.resolution_height
+    end
+
+    local windowWidth, windowHeight = adjustedWidth, adjustedHeight
+    -- settings.Preferences.resolution_width, settings.Preferences.resolution_height
+    -- love.window.getDesktopDimensions()
 
     push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = settings.Preferences.fullscreen})
 
