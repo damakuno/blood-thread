@@ -14,6 +14,7 @@
     },  
     "Game": {
         "hp": 100,
-        "hp_drain_rate": 0.05
+        "hp_drain_rate": 0.05,
+        "out_of_bounds_hp_drain_rate": 0.5
     }
 }

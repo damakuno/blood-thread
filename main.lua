@@ -203,10 +203,12 @@ function love.mousemoved(x, y, dx, dy, istouch)
     scaled_mouse.y = gmy and gmy or scaled_mouse.y
 
 	rope1:moveFirstPoint(scaled_mouse.x + 30, scaled_mouse.y + 30)
+    in_circle = false
     debug_text = "Out of Circle, active_stitch_index: "..active_stitch_index
     for i, stitch_region in ipairs(stitch_region_group) do
         for key, value in ipairs(stitch_region) do
             if cursorInCircle(scaled_mouse.x, scaled_mouse.y, value.x, value.y, stitch_radius) then
+                in_circle = true
                 debug_text = "In Circle, active_stitch_index: "..active_stitch_index
                 if mouse.pressed then
                     active_stitch_index = i
@@ -217,7 +219,12 @@ function love.mousemoved(x, y, dx, dy, istouch)
     end
 
     if mouse.pressed then
-        hp = hp - settings.Game.hp_drain_rate
+        if in_circle and level_cleared == false then
+            hp = hp - settings.Game.hp_drain_rate
+        else
+            hp = hp - settings.Game.out_of_bounds_hp_drain_rate
+        end
+
         blood_quad = love.graphics.newQuad(0,0, blood_width,blood_height * (hp / settings.Game.hp), blood_width,blood_height)
         if hp <= 0 then
             current_level = 0
