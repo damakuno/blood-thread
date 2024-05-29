@@ -2,7 +2,7 @@
     {
         "x": 0,
         "y": 0,
-        "duration": 1.5,
+        "duration": 1.0,
         "transition": "from_top",
         "image": "res/Opening Cutscene/Title Screen.png"
     }

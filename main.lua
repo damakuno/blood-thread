@@ -58,12 +58,11 @@ function love.load()
 
     debug_text = settings.Misc.debug
     audio = Audio:new()
-    audio:playIntroBGM()
 
     local gameWidth, gameHeight = 1920, 1080 --fixed game resolution
     local windowWidth, windowHeight = love.window.getDesktopDimensions()
 
-    push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true})
+    push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = settings.Preferences.fullscreen})
 
     hp = settings.Game.hp
 
@@ -111,6 +110,8 @@ function love.load()
         resetLevel()        
         loadNextLevel()
     end
+
+    panels[panel_index]:start()
 end
 
 function love.resize(w, h)
@@ -143,7 +144,7 @@ function love.draw()
         love.graphics.draw(img_mortician, 50,800)
         love.graphics.draw(img_vignette, 0,0)
         rope1:draw()
-    end    
+    end
 
     if settings.Misc.debug == 1 then
         love.graphics.setColor(255,255,255)
@@ -195,7 +196,7 @@ function love.mousemoved(x, y, dx, dy, istouch)
     mouse.x = x
     mouse.y = y
     mouse.dx = dx
-    mouse.dy = dy    
+    mouse.dy = dy
     gmx, gmy = push:toGame(x, y)
 	rope1:moveFirstPoint(gmx + 30, gmy + 30)
     debug_text = "Out of Circle, active_stitch_index: "..active_stitch_index
@@ -243,8 +244,12 @@ function love.mousepressed(x, y, button)
         
         if chapter_index < (chapter_length + 1) then
             if panels[panel_index] ~= nil then
-                panels[panel_index]:start()
-            end            
+                panels[panel_index]:start()            
+            end
+            -- only play when it's the first chapter and panel
+            if chapter_index == 2 and panel_index == 1 then
+                audio:playIntroBGM()
+            end
             panel_index = panel_index + 1
             if panel_index > #panels + 1 then
                 for key, value in ipairs(panels) do
@@ -255,7 +260,7 @@ function love.mousepressed(x, y, button)
                 -- transition to gameplay here
                     if game_end then
                     else
-                        audio:playDefaultBGM()                
+                        audio:playDefaultBGM()
                         panels = {}
                         loadNextLevel()
                     end
@@ -324,7 +329,7 @@ end
 
 function loadNextLevel()
     current_level = current_level + 1
-    if current_level == 1 then        
+    if current_level == 1 then
         table.insert(stitch_region_group, json.decode(file.readall('levels/level1_hand_wound1.json')))
         current_body.body_image = img_hand
         current_body.wound_image = img_hand_wound
