@@ -8,9 +8,11 @@
         "sfxVolume": "0.5"
     },
     "Preferences": {
-        "fullscreen": true        
+        "fullscreen": false,
+        "resolution_width": 1366,
+        "resolution_height": 800
     },  
     "Game": {
-        "hp": 200
+        "hp": 100
     }
 }

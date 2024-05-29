@@ -11,6 +11,7 @@ Rope = require "lib.core.rope"
 push = require "lib.utils.push"
 
 mouse = { x = 0, y = 0, dx = 0, dy = 0, pressed = false }
+scaled_mouse = {x = 0, y = 0}
 
 game_end = false
 panels = {}
@@ -60,7 +61,7 @@ function love.load()
     audio = Audio:new()
 
     local gameWidth, gameHeight = 1920, 1080 --fixed game resolution
-    local windowWidth, windowHeight = love.window.getDesktopDimensions()
+    local windowWidth, windowHeight = settings.Preferences.resolution_width, settings.Preferences.resolution_height --love.window.getDesktopDimensions()
 
     push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = settings.Preferences.fullscreen})
 
@@ -79,7 +80,8 @@ function love.load()
 
     rope1 = Rope(love.graphics.getWidth()*.25, 100, 300, 25, 10)
 	rope1.fixLastPoint = true
-	rope1:moveLastPoint(love.graphics.getWidth()*.5, love.graphics.getHeight()*1)
+	-- rope1:moveLastPoint(love.graphics.getWidth()*.5, love.graphics.getHeight()*1.0)
+    rope1:moveLastPoint(gameWidth * 0.5, gameHeight * 1.0)
 
     -- set up for levels
     img_heart_gauge = love.graphics.newImage("res/ui/Heart Gauge.png")
@@ -198,11 +200,14 @@ function love.mousemoved(x, y, dx, dy, istouch)
     mouse.dx = dx
     mouse.dy = dy
     gmx, gmy = push:toGame(x, y)
-	rope1:moveFirstPoint(gmx + 30, gmy + 30)
+    scaled_mouse.x = gmx and gmx or scaled_mouse.x
+    scaled_mouse.y = gmy and gmy or scaled_mouse.y
+
+	rope1:moveFirstPoint(scaled_mouse.x + 30, scaled_mouse.y + 30)
     debug_text = "Out of Circle, active_stitch_index: "..active_stitch_index
     for i, stitch_region in ipairs(stitch_region_group) do
         for key, value in ipairs(stitch_region) do
-            if cursorInCircle(gmx, gmy, value.x, value.y, stitch_radius) then
+            if cursorInCircle(scaled_mouse.x, scaled_mouse.y, value.x, value.y, stitch_radius) then
                 debug_text = "In Circle, active_stitch_index: "..active_stitch_index
                 if mouse.pressed then
                     active_stitch_index = i
@@ -222,7 +227,7 @@ function love.mousemoved(x, y, dx, dy, istouch)
         end
     end
 
-    btn_next:mousemoved(gmx, gmy, dx, dy, istouch)
+    btn_next:mousemoved(scaled_mouse.x, scaled_mouse.y, dx, dy, istouch)
 end
 
 function love.keypressed(key, u)
@@ -236,7 +241,7 @@ function love.keypressed(key, u)
 end
 
 function love.mousepressed(x, y, button)
-    gmx, gmy = push:toGame(x, y)
+    -- gmx, gmy = push:toGame(x, y)
     if button == 1 then
         mouse.pressed = true
         -- handle chapters here    
@@ -277,10 +282,10 @@ function love.mousepressed(x, y, button)
         -- table.insert(stitch_regions, {x=x, y=y})
     end
 
-    btn_next:mousepressed(gmx, gmy, button)
+    btn_next:mousepressed(scaled_mouse.x, scaled_mouse.y, button)
 end
 
-function love.mousereleased( x, y, button, istouch, presses )    
+function love.mousereleased(x, y, button, istouch, presses )    
     mouse.pressed = false
 
     if stitch_region_group[active_stitch_index] ~= nil then
