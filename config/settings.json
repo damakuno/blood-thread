@@ -1,6 +1,6 @@
 {
     "Misc": {
-        "debug": 0
+        "debug": 1
     },
     "Sound": {
         "masterVolume": "0.8",
@@ -9,5 +9,24 @@
     },
     "Game": {
         "hp": 200
+    },
+    "Preferences": {
+        "fullscreen": true,
+        "vsync": true,
+        "fsaa": false,
+        "pixelscale": 1,
+        "stretch": true,
+        "stretchfill": false
+    },
+    "App": {
+        "screen_width": 1920,
+        "screen_height": 1080,
+        "draw_width": 1920,
+        "draw_height": 1080,
+        "scale_vert": 1,
+        "scale_horiz": 1,
+        "draw_ox": 0,
+        "draw_oy": 0,
+        "usecanvas": false
     }
 }

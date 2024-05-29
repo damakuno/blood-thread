@@ -8,6 +8,7 @@ Audio = require "lib.utils.Audio"
 
 ComicPanel = require "lib.core.ComicPanel"
 Rope = require "lib.core.rope"
+push = require "lib.utils.push"
 
 mouse = { x = 0, y = 0, dx = 0, dy = 0, pressed = false }
 
@@ -49,14 +50,20 @@ function cursorInCircle(x, y, center_x, center_y, radius)
     return ((x-center_x)^2 + (y - center_y)^2) < radius^2
 end
 
-function love.load()
+function love.load()                  
     love.window.setTitle("Blood Sewn")
-    love.window.setMode(1920, 1080)
+
     love.mouse.setCursor(love.mouse.newCursor("res/needlecursor.png", 0, 0))
     settings = json.decode(file.readall('config/settings.json'))
+
     debug_text = settings.Misc.debug
     audio = Audio:new()
     audio:playIntroBGM()
+
+    local gameWidth, gameHeight = 1920, 1080 --fixed game resolution
+    local windowWidth, windowHeight = love.window.getDesktopDimensions()
+
+    push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true})
 
     hp = settings.Game.hp
 
@@ -104,45 +111,21 @@ function love.load()
         resetLevel()        
         loadNextLevel()
     end
-
 end
 
+function love.resize(w, h)
+    push:resize(w, h)
+end
 
 function love.draw()
-    -- Store desktop resolution
-	local width, height = love.window.getDesktopDimensions()	
-	-- Resolution to be upscaled
-	local xscale = 480
-	local yscale = 270
-	local scale = math.min(xscale, yscale)
-	
-	-- 2x windowed mode if below 720p
-	if height < 720 then
-		love.graphics.scale(1, 1) -- Integer scaling
+    push:start()
 
-	-- Otherwise go fullscreen and output the largest 1:1 image possible; x/yscale, width/height and scaling multipliers need to be manually adjusted
-	elseif width == 1280 and height == 720 then
-		love.window.setFullscreen(true)
-		local xoffset = (width-xscale*2)/2 -- 960x540 in 1280x720 will produce black borders
-		local yoffset = (height-yscale*2)/2 -- so image needs to be centered
-		love.graphics.translate(xoffset, yoffset) -- needed when centering so coordinates remain consistent
-		love.graphics.setScissor(xoffset, yoffset, width*2/2, height*2/2) -- keeps out-of-bound objects hidden, needs testing
-		love.graphics.scale(1, 1)
-	elseif width == 1600 and height == 900 then
-		love.window.setFullscreen(true)
-		local xoffset = (width-xscale*3)/2
-		local yoffset = (height-yscale*3)/2
-		love.graphics.setScissor(xoffset, yoffset, width*3/2, height*3/2)
-		love.graphics.translate(xoffset, yoffset)
-		love.graphics.scale(1, 1)
-	-- and so on
-		
-	-- Perfect fullsize image, no centering needed
-	elseif width == 1920 and height == 1080 then
-		love.window.setFullscreen(true)
-		love.graphics.scale(1, 1)
-	end
-	
+    -- mx, my = suit.getMousePosition()
+    -- print(mx..my)
+    -- if mouseX ~= nil and mouseY ~= nil then
+    --     love.mouse.setPosition(mouseX, mouseY)
+    -- end
+
     love.graphics.setColor(255,255,255)
     for key, value in ipairs(panels) do
         panels[key]:draw()
@@ -170,6 +153,7 @@ function love.draw()
         pressed_text = ""
         if mouse.pressed then pressed_text = "True" else pressed_text = "False" end
         love.graphics.print("x: "..mouse.x.." y: "..mouse.y.." pressed: "..pressed_text.." hp: "..hp, 500, 40)
+        -- love.graphics.print("mouseX: "..mouseX.." mouseY: "..mouseY, 500, 60)
     end
     for i, stitch_region in ipairs(stitch_region_group) do
         for key, value in ipairs(stitch_region) do
@@ -192,6 +176,8 @@ function love.draw()
         love.graphics.setColor(255,255,255)
         love.graphics.draw(img_game_over, 0, 0)
     end
+
+    push:finish()
 end
 
 function love.update(dt)
@@ -209,12 +195,13 @@ function love.mousemoved(x, y, dx, dy, istouch)
     mouse.x = x
     mouse.y = y
     mouse.dx = dx
-    mouse.dy = dy
-	rope1:moveFirstPoint(mouse.x + 30, mouse.y + 30)
+    mouse.dy = dy    
+    gmx, gmy = push:toGame(x, y)
+	rope1:moveFirstPoint(gmx + 30, gmy + 30)
     debug_text = "Out of Circle, active_stitch_index: "..active_stitch_index
     for i, stitch_region in ipairs(stitch_region_group) do
         for key, value in ipairs(stitch_region) do
-            if cursorInCircle(x, y, value.x, value.y, stitch_radius) then
+            if cursorInCircle(gmx, gmy, value.x, value.y, stitch_radius) then
                 debug_text = "In Circle, active_stitch_index: "..active_stitch_index
                 if mouse.pressed then
                     active_stitch_index = i
@@ -234,7 +221,7 @@ function love.mousemoved(x, y, dx, dy, istouch)
         end
     end
 
-    btn_next:mousemoved(x, y, dx, dy, istouch)
+    btn_next:mousemoved(gmx, gmy, dx, dy, istouch)
 end
 
 function love.keypressed(key, u)
@@ -248,6 +235,7 @@ function love.keypressed(key, u)
 end
 
 function love.mousepressed(x, y, button)
+    gmx, gmy = push:toGame(x, y)
     if button == 1 then
         mouse.pressed = true
         -- handle chapters here    
@@ -284,10 +272,10 @@ function love.mousepressed(x, y, button)
         -- table.insert(stitch_regions, {x=x, y=y})
     end
 
-    btn_next:mousepressed(x, y, button)
+    btn_next:mousepressed(gmx, gmy, button)
 end
 
-function love.mousereleased( x, y, button, istouch, presses )
+function love.mousereleased( x, y, button, istouch, presses )    
     mouse.pressed = false
 
     if stitch_region_group[active_stitch_index] ~= nil then
