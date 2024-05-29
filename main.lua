@@ -77,7 +77,6 @@ function love.load()
     -- if panels[panel_index]~=nil then
     --     panels[panel_index]:start()
     -- end
-
     rope1 = Rope(love.graphics.getWidth()*.25, 100, 300, 25, 10)
 	rope1.fixLastPoint = true
 	-- rope1:moveLastPoint(love.graphics.getWidth()*.5, love.graphics.getHeight()*1.0)
@@ -218,7 +217,7 @@ function love.mousemoved(x, y, dx, dy, istouch)
     end
 
     if mouse.pressed then
-        hp = hp - 0.05
+        hp = hp - settings.Game.hp_drain_rate
         blood_quad = love.graphics.newQuad(0,0, blood_width,blood_height * (hp / settings.Game.hp), blood_width,blood_height)
         if hp <= 0 then
             current_level = 0

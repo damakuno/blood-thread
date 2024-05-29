@@ -13,6 +13,7 @@
         "resolution_height": 800
     },  
     "Game": {
-        "hp": 100
+        "hp": 100,
+        "hp_drain_rate": 0.05
     }
 }
