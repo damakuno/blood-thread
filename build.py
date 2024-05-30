@@ -7,6 +7,9 @@ import subprocess
 game_name = 'bloodsewn'
 output_love_file = f'./dist/{game_name}.love'
 love_path = 'C:\\Program Files\\LOVE\\'
+
+if not os.path.exists('./dist'):
+    os.mkdir('./dist')
 # Create object of ZipFile
 with ZipFile(output_love_file, 'w') as zip_object:
    # Traverse all files in directory
