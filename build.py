@@ -1,14 +1,21 @@
 import os
 from zipfile import ZipFile
+import shutil
+from pathlib import Path
+import subprocess
 
+game_name = 'bloodsewn'
+output_love_file = f'./dist/{game_name}.love'
+love_path = 'C:\\Program Files\\LOVE\\'
 # Create object of ZipFile
-with ZipFile('./dist/bloodsewn.love', 'w') as zip_object:
+with ZipFile(output_love_file, 'w') as zip_object:
    # Traverse all files in directory
    for folder_name, sub_folders, file_names in os.walk('./'):
         if folder_name not in ['.git', './.vscode', './dist']:
             if './.git' not in folder_name:
-                print('folder_name:', folder_name, 'sub_folders:', sub_folders, 'file_names:', file_names)
+                # print('folder_name:', folder_name, 'sub_folders:', sub_folders, 'file_names:', file_names)
                 for filename in file_names:
+                    print(f'Copying to dist/: {folder_name}{filename}')
                     if filename not in [
                             'build.py',
                             '.gitignore'                        
@@ -18,8 +25,35 @@ with ZipFile('./dist/bloodsewn.love', 'w') as zip_object:
                         # Add files to zip file
                         zip_object.write(file_path, file_path)#os.path.basename(file_path))
 
-if os.path.exists('./dist/bloodsewn.love'):
-   print("./dist/bloodsewn.love created")
+if os.path.exists(output_love_file):
+   print(f"{output_love_file} created")
 else:
-   print("./dist/bloodsewn.love not created")
+   print(f"{output_love_file} not created")
 
+
+shutil.copytree('./config', './dist/config/', dirs_exist_ok=True)
+shutil.copytree('./levels', './dist/levels/', dirs_exist_ok=True)
+
+for file_type in ['.json', '.md']:
+    for path in Path('.').glob(f'*{file_type}'):
+        shutil.copyfile(path, Path('./dist/') / (path.stem + path.suffix))
+
+love_absolute_dir = Path(output_love_file).resolve()
+output_exe_dir = Path(f'./dist/{game_name}.exe').resolve()
+
+cmd = f'copy /b "{love_path}love.exe"+"{love_absolute_dir}" "{output_exe_dir}"'
+print(f'building exe to: {output_exe_dir} from {output_love_file}...')
+print(cmd)
+os.system(cmd)
+
+print('copying dlls and license.txt...')
+for path in Path(love_path).glob('*.dll'):
+    shutil.copyfile(path, Path('./dist') / (path.stem + path.suffix))
+shutil.copyfile(Path(love_path) / 'license.txt', Path('./dist') / 'license.txt')
+
+print(f'deleting love archive: {output_love_file}...')
+os.remove(output_love_file)
+if os.path.exists(output_love_file):
+   print(f"{output_love_file} not deleted")
+else:
+   print(f"{output_love_file} deleted")
