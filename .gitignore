@@ -1,4 +1,5 @@
 dist
+out
 web_dist
 web_dist/*
 res/test/

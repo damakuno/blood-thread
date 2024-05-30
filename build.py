@@ -6,17 +6,23 @@ import subprocess
 
 game_name = 'bloodsewn'
 output_love_file = f'./dist/{game_name}.love'
-output_zip_file = f'./{game_name}.zip'
+output_zip_file = f'./out/{game_name}.zip'
+output_web_zip_file = f'./out/{game_name}_web.zip'
 love_path = 'C:\\Program Files\\LOVE\\'
 
 if not os.path.exists('./dist'):
     os.mkdir('./dist')
+if not os.path.exists('./web_dist'):
+    os.mkdir('./web_dist')
+if not os.path.exists('./out'):
+    os.mkdir('./out')
+
 # Create object of ZipFile
 with ZipFile(output_love_file, 'w') as zip_object:
    # Traverse all files in directory
    for folder_name, sub_folders, file_names in os.walk('./'):
-        if folder_name not in ['.git', './.vscode', './dist', './web_dist']:
-            if './.git' not in folder_name:
+        if folder_name not in ['.git', './.vscode', './dist', './out']:
+            if './.git' not in folder_name and './web_dist' not in folder_name:
                 # print('folder_name:', folder_name, 'sub_folders:', sub_folders, 'file_names:', file_names)
                 for filename in file_names:
                     if filename not in [
@@ -24,7 +30,7 @@ with ZipFile(output_love_file, 'w') as zip_object:
                             '.gitignore',
                             f'{game_name}.zip'                        
                         ]:                        
-                        print(f'Copying to dist/: {folder_name}{filename}')
+                        print(f'Copying to dist/: {folder_name}/{filename}')
                         # Create filepath of files in directory
                         file_path = os.path.join(folder_name, filename)                         
                         # Add files to zip file
@@ -75,7 +81,17 @@ print(f'creating final archive: {output_zip_file}...')
 with ZipFile(output_zip_file, 'w') as zip_object:
     for folder_name, sub_folders, file_names in os.walk('./dist/'):                    
         for filename in file_names:
-            print(f'Adding to final archive: {folder_name}{filename}')
+            print(f'Adding to final archive: {folder_name}/{filename}')
+            # Create filepath of files in directory
+            file_path = os.path.join(folder_name, filename)                         
+            # Add files to zip file
+            zip_object.write(file_path, file_path)
+
+print(f'creating final web archive: {output_web_zip_file}...')
+with ZipFile(output_web_zip_file, 'w') as zip_object:
+    for folder_name, sub_folders, file_names in os.walk('./web_dist/'):                    
+        for filename in file_names:
+            print(f'Adding to final archive: {folder_name}/{filename}')
             # Create filepath of files in directory
             file_path = os.path.join(folder_name, filename)                         
             # Add files to zip file
