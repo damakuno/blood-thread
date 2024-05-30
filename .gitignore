@@ -1,4 +1,6 @@
 dist
+web_dist
+web_dist/*
 res/test/
 .vscode
 *.love

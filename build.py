@@ -14,7 +14,7 @@ if not os.path.exists('./dist'):
 with ZipFile(output_love_file, 'w') as zip_object:
    # Traverse all files in directory
    for folder_name, sub_folders, file_names in os.walk('./'):
-        if folder_name not in ['.git', './.vscode', './dist']:
+        if folder_name not in ['.git', './.vscode', './dist', './web_dist']:
             if './.git' not in folder_name:
                 # print('folder_name:', folder_name, 'sub_folders:', sub_folders, 'file_names:', file_names)
                 for filename in file_names:
@@ -53,6 +53,11 @@ print('copying dlls and license.txt...')
 for path in Path(love_path).glob('*.dll'):
     shutil.copyfile(path, Path('./dist') / (path.stem + path.suffix))
 shutil.copyfile(Path(love_path) / 'license.txt', Path('./dist') / 'license.txt')
+
+cmd = f'npx love.js.cmd -m 40000000 -t {game_name} "{love_absolute_dir}" .\\web_dist\\'
+print(f'building web build to: .\\web_dist\\...')
+print(cmd)
+os.system(cmd)
 
 print(f'deleting love archive: {output_love_file}...')
 os.remove(output_love_file)
