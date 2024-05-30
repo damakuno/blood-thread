@@ -8,7 +8,7 @@
         "sfxVolume": "0.5"
     },
     "Preferences": {
-        "fullscreen": false,
+        "fullscreen": true,
         "resolution_width": 1920,
         "resolution_height": 1080
     },  
