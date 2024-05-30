@@ -6,6 +6,7 @@ import subprocess
 
 game_name = 'bloodsewn'
 output_love_file = f'./dist/{game_name}.love'
+output_zip_file = f'./{game_name}.zip'
 love_path = 'C:\\Program Files\\LOVE\\'
 
 if not os.path.exists('./dist'):
@@ -18,15 +19,18 @@ with ZipFile(output_love_file, 'w') as zip_object:
             if './.git' not in folder_name:
                 # print('folder_name:', folder_name, 'sub_folders:', sub_folders, 'file_names:', file_names)
                 for filename in file_names:
-                    print(f'Copying to dist/: {folder_name}{filename}')
                     if filename not in [
                             'build.py',
-                            '.gitignore'                        
-                        ]:
+                            '.gitignore',
+                            f'{game_name}.zip'                        
+                        ]:                        
+                        print(f'Copying to dist/: {folder_name}{filename}')
                         # Create filepath of files in directory
                         file_path = os.path.join(folder_name, filename)                         
                         # Add files to zip file
                         zip_object.write(file_path, file_path)#os.path.basename(file_path))
+                    else:
+                        print(f'Skipped: {folder_name}{filename}')
 
 if os.path.exists(output_love_file):
    print(f"{output_love_file} created")
@@ -65,3 +69,14 @@ if os.path.exists(output_love_file):
    print(f"{output_love_file} not deleted")
 else:
    print(f"{output_love_file} deleted")
+
+print(f'creating final archive: {output_zip_file}...')
+
+with ZipFile(output_zip_file, 'w') as zip_object:
+    for folder_name, sub_folders, file_names in os.walk('./dist/'):                    
+        for filename in file_names:
+            print(f'Adding to final archive: {folder_name}{filename}')
+            # Create filepath of files in directory
+            file_path = os.path.join(folder_name, filename)                         
+            # Add files to zip file
+            zip_object.write(file_path, file_path)

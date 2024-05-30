@@ -4,3 +4,4 @@ web_dist/*
 res/test/
 .vscode
 *.love
+*.zip
