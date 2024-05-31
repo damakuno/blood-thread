@@ -274,7 +274,7 @@ function love.mousepressed(x, y, button)
                 panels[panel_index]:start()            
             end
             -- only play when it's the first chapter and panel
-            if chapter_index == 2 and panel_index == 1 then
+            if game_end == false and chapter_index == 2 and panel_index == 1 then
                 audio:playIntroBGM()
             end
             panel_index = panel_index + 1
