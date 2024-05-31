@@ -44,9 +44,12 @@ else:
    print(f"{output_love_file} not created")
 
 
+print('copying config to ./dist/...')
 shutil.copytree('./config', './dist/config/', dirs_exist_ok=True)
+print('copying levels to ./dist/...')
 shutil.copytree('./levels', './dist/levels/', dirs_exist_ok=True)
 
+print('copying comic panel sequence jsons to ./dist/...')
 for file_type in ['.json', '.md']:
     for path in Path('.').glob(f'*{file_type}'):
         shutil.copyfile(path, Path('./dist/') / (path.stem + path.suffix))
@@ -59,15 +62,32 @@ print(f'building exe to: {output_exe_dir} from {output_love_file}...')
 print(cmd)
 os.system(cmd)
 
-print('copying dlls and license.txt...')
+print('copying dlls and license.txt to ./dist/...')
 for path in Path(love_path).glob('*.dll'):
     shutil.copyfile(path, Path('./dist') / (path.stem + path.suffix))
 shutil.copyfile(Path(love_path) / 'license.txt', Path('./dist') / 'license.txt')
 
-cmd = f'npx love.js.cmd -m 40000000 -t {game_name} "{love_absolute_dir}" .\\web_dist\\'
+cmd = f'npx love.js.cmd -m 50000000 -t {game_name} "{love_absolute_dir}" .\\web_dist\\'
 print(f'building web build to: .\\web_dist\\...')
 print(cmd)
 os.system(cmd)
+
+print('copying config to ./web_dist/...')
+shutil.copytree('./config', './web_dist/config/', dirs_exist_ok=True)
+print('copying levels to ./web_dist/...')
+shutil.copytree('./levels', './web_dist/levels/', dirs_exist_ok=True)
+
+print('copying comic panel sequence jsons to ./web_dist/...')
+for file_type in ['.json', '.md']:
+    for path in Path('.').glob(f'*{file_type}'):
+        shutil.copyfile(path, Path('./web_dist/') / (path.stem + path.suffix))
+
+love_absolute_dir = Path(output_love_file).resolve()
+output_exe_dir = Path(f'./web_dist/{game_name}.exe').resolve()
+
+print('license.txt to ./web_dist/...')
+shutil.copyfile(Path(love_path) / 'license.txt', Path('./web_dist') / 'license.txt')
+
 
 print(f'deleting love archive: {output_love_file}...')
 os.remove(output_love_file)
@@ -93,6 +113,6 @@ with ZipFile(output_web_zip_file, 'w') as zip_object:
         for filename in file_names:
             print(f'Adding to final archive: {folder_name}/{filename}')
             # Create filepath of files in directory
-            file_path = os.path.join(folder_name, filename)                         
+            file_path = os.path.join(folder_name, filename)         
             # Add files to zip file
             zip_object.write(file_path, file_path)
