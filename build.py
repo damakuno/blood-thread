@@ -9,6 +9,7 @@ output_love_file = f'./dist/{game_name}.love'
 output_zip_file = f'./out/{game_name}.zip'
 output_web_zip_file = f'./out/{game_name}_web.zip'
 love_path = 'C:\\Program Files\\LOVE\\'
+_7z_path = 'C:\\Program Files\\7-Zip\\7z.exe'
 
 if not os.path.exists('./dist'):
     os.mkdir('./dist')
@@ -108,11 +109,15 @@ with ZipFile(output_zip_file, 'w') as zip_object:
             zip_object.write(file_path, file_path)
 
 print(f'creating final web archive: {output_web_zip_file}...')
-with ZipFile(output_web_zip_file, 'w') as zip_object:
-    for folder_name, sub_folders, file_names in os.walk('./web_dist/'):                    
-        for filename in file_names:
-            print(f'Adding to final archive: {folder_name}/{filename}')
-            # Create filepath of files in directory
-            file_path = os.path.join(folder_name, filename)         
-            # Add files to zip file
-            zip_object.write(file_path, file_path)
+cmd = f'"{_7z_path}" u {output_web_zip_file} .\\web_dist\\*'
+print(cmd)
+os.system(cmd)
+# print(f'creating final web archive: {output_web_zip_file}...')
+# with ZipFile(output_web_zip_file, 'w') as zip_object:
+#     for folder_name, sub_folders, file_names in os.walk('./web_dist/'):                    
+#         for filename in file_names:
+#             print(f'Adding to final archive: {folder_name}/{filename}')
+#             # Create filepath of files in directory
+#             file_path = os.path.join(folder_name, filename)         
+#             # Add files to zip file
+#             zip_object.write(file_path, file_path)
